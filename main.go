@@ -29,6 +29,11 @@ func main() {
 	request := alidns.CreateUpdateDomainRecordRequest()
 	request.Scheme = "https"
 
+	request.RecordId = "<RecordId>"
+	request.RR = "<RR>"
+	request.Type = "<Type>"
+	request.Value = "<Value>"
+
 	response, err := client.UpdateDomainRecord(request)
 	if err != nil {
 		fmt.Print(err.Error())
