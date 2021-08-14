@@ -2,9 +2,26 @@ package main
 
 import (
 	"fmt"
-	alidns "github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
-
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
+	"io"
+	"io/ioutil"
+	"net/http"
 )
+
+func getIP() string {
+	resp, err := http.Get("http://ifconfig.me/ip")
+	if err != nil {
+		return ""
+	}
+
+	content, _ := ioutil.ReadAll(resp.Body)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+		}
+	}(resp.Body)
+	return string(content)
+}
 
 func main() {
 	client, err := alidns.NewClientWithAccessKey("cn-shanghai", "<accessKeyId>", "<accessSecret>")
