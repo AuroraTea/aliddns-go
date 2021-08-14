@@ -24,7 +24,7 @@ func getIP() string {
 	return string(content)
 }
 
-func changeDNS() {
+func changeDNS(currentIP string)  {
 	client, err := alidns.NewClientWithAccessKey("cn-shanghai", "<accessKeyId>", "<accessSecret>")
 
 	request := alidns.CreateUpdateDomainRecordRequest()
@@ -33,7 +33,7 @@ func changeDNS() {
 	request.RecordId = "<RecordId>"
 	request.RR = "<RR>"
 	request.Type = "<Type>"
-	request.Value = getIP()
+	request.Value = currentIP
 
 	response, err := client.UpdateDomainRecord(request)
 	if err != nil {
@@ -43,7 +43,11 @@ func changeDNS() {
 }
 
 func main() {
-	ticker := time.NewTicker(1 * time.Minute)
+
+	currentIP := getIP()
+	changeDNS(currentIP)
+
+	ticker := time.NewTicker(2 * time.Minute)
 	done := make(chan bool)
 
 	go func() {
@@ -52,7 +56,15 @@ func main() {
 			case <-done:
 				return
 			case <-ticker.C:
-				fmt.Println(getIP())
+				newIP :=getIP()
+				if newIP != currentIP {
+					currentIP = newIP
+					changeDNS(currentIP)
+					fmt.Println("DNS解析已修改为:", currentIP)
+				} else {
+					fmt.Println("IP未发生改变:", currentIP)
+				}
+
 			}
 		}
 	}()
