@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func getIP() string {
@@ -23,7 +24,7 @@ func getIP() string {
 	return string(content)
 }
 
-func main() {
+func changeDNS() {
 	client, err := alidns.NewClientWithAccessKey("cn-shanghai", "<accessKeyId>", "<accessSecret>")
 
 	request := alidns.CreateUpdateDomainRecordRequest()
@@ -38,6 +39,26 @@ func main() {
 	if err != nil {
 		fmt.Print(err.Error())
 	}
-	fmt.Println("DNS解析已修改为:", getIP())
 	fmt.Printf("response is %#v\n", response)
+}
+
+func main() {
+	ticker := time.NewTicker(1 * time.Minute)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
+				fmt.Println(getIP())
+			}
+		}
+	}()
+
+	time.Sleep(876000 * time.Hour)
+	ticker.Stop()
+	done <- true
+	fmt.Println("----------到点熄灯----------")
 }
