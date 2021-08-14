@@ -32,11 +32,12 @@ func main() {
 	request.RecordId = "<RecordId>"
 	request.RR = "<RR>"
 	request.Type = "<Type>"
-	request.Value = "<Value>"
+	request.Value = getIP()
 
 	response, err := client.UpdateDomainRecord(request)
 	if err != nil {
 		fmt.Print(err.Error())
 	}
+	fmt.Println("DNS解析已修改为:", getIP())
 	fmt.Printf("response is %#v\n", response)
 }
