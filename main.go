@@ -9,7 +9,7 @@ import (
 )
 
 func getIP() string {
-	resp, err := http.Get("http://ifconfig.me/ip")
+	resp, err := http.Get("http://whatismyip.akamai.com/")
 	if err != nil {
 		return ""
 	}
